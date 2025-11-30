@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { PrismaService } from "./prisma.service";
-import { InfluencersRepository } from "./influencers/influencers.repository";
+import { InfluencersRepository } from "./influencers.repository";
+
 
 @Module({
     providers: [PrismaService, InfluencersRepository],

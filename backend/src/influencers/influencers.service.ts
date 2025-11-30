@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { CreateInfluencerDto } from "./dto/create-influencer.dto";
 import { UpdateInfluencerDto } from "./dto/update-influencer.dto";
-import { InfluencersRepository } from "src/data-access/influencers/influencers.repository";
+import { InfluencersRepository } from "src/data-access/influencers.repository";
+
 
 @Injectable()
 export class InfluencersService {

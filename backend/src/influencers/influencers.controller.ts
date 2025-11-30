@@ -10,11 +10,28 @@ import {
 import { InfluencersService } from "./influencers.service";
 import { CreateInfluencerDto } from "./dto/create-influencer.dto";
 import { UpdateInfluencerDto } from "./dto/update-influencer.dto";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { InfluencerSchema } from "./schemas/influencer.schema";
 
+@ApiTags("Influencers")
 @Controller("influencers")
 export class InfluencersController {
   constructor(private readonly influencersService: InfluencersService) {}
 
+  @ApiOperation({
+		summary: 'Register a new influencer',
+		description:
+			'This endpoint creates a new influencer with the provided details.',
+	})
+	@ApiResponse({
+		status: 201,
+		description: 'Successfully created',
+		content: {
+			'application/json': {
+				schema: InfluencerSchema
+			},
+		},
+	})
   @Post()
   create(@Body() createInfluencerDto: CreateInfluencerDto) {
     return this.influencersService.create(createInfluencerDto);

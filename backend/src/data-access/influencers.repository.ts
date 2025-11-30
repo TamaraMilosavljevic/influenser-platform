@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../prisma.service";
-import { CreateInfluencer } from "./influencer.type";
+import { PrismaService } from "./prisma.service";
+import { CreateInfluencer } from "src/influencers/types/influencer.type";
 
 @Injectable()
 export class InfluencersRepository {
