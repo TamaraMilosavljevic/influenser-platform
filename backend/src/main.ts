@@ -3,9 +3,11 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder } from "@nestjs/swagger/dist/document-builder";
 import { SwaggerModule } from "@nestjs/swagger/dist/swagger-module";
+import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .setTitle("Influencer Platform API")
     .setDescription("API docs for the Influencer/Business backend")
