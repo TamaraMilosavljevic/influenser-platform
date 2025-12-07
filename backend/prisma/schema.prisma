@@ -34,4 +34,5 @@ model Influencer {
   name           String
   headline       String?
   experience     Int?
+  isPrivate     Boolean  @default(true)
 }

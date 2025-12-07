@@ -3,12 +3,18 @@ import { CreateInfluencerDto } from "./dto/create-influencer.dto";
 import { UpdateInfluencerDto } from "./dto/update-influencer.dto";
 import { InfluencersRepository } from "src/data-access/influencers.repository";
 
-
 @Injectable()
 export class InfluencersService {
   constructor(private influencersRepository: InfluencersRepository) {}
   create(createInfluencerDto: CreateInfluencerDto) {
-    return this.influencersRepository.createInfluencer({...createInfluencerDto, role: 'INFLUENCER'});
+    return this.influencersRepository.createInfluencer({
+      ...createInfluencerDto,
+      role: "INFLUENCER",
+    });
+  }
+
+  publish(influencerId: string) {
+    return this.influencersRepository.update(influencerId, { isPrivate: true });
   }
 
   findAll() {

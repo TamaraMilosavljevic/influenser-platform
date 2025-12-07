@@ -37,6 +37,11 @@ export class InfluencersController {
     return this.influencersService.create(createInfluencerDto);
   }
 
+  @Post('/publish')
+  publish() {
+    return this.influencersService.publish();
+  }
+
   @Get()
   findAll() {
     return this.influencersService.findAll();
