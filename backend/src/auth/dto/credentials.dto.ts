@@ -9,6 +9,12 @@ export class Credentials {
   password: string;
 }
 
+export class AccessTokenData {
+  sub: string;
+  email: string;
+  role: string;
+}
+
 export const jwtConstants = {
   secret: process.env.JWT_SECRET || '',
 };
