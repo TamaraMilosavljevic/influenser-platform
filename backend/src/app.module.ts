@@ -6,7 +6,7 @@ import { ReviewsModule } from "./reviews/reviews.module";
 import { AuthModule } from "./auth/auth.module";
 import { DataAccessModule } from "./data-access/data-access.module";
 import { APP_GUARD } from "@nestjs/core";
-import { AuthGuard } from "./auth/auth.guard";
+import { JwtAuthGuard } from "./auth/auth.guard";
 import { RolesGuard } from "./auth/roles.guard";
 
 @Module({
@@ -22,7 +22,7 @@ import { RolesGuard } from "./auth/roles.guard";
   providers: [
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
+      useClass: JwtAuthGuard,
     },
     {
       provide: APP_GUARD,

@@ -5,6 +5,7 @@ import { DataAccessModule } from "src/data-access/data-access.module";
 import { PasswordService } from "./password.service";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "./dto/credentials.dto";
+import { JwtStrategy } from "./jwt.strategy";
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { jwtConstants } from "./dto/credentials.dto";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, PasswordService],
+  providers: [AuthService, PasswordService, JwtStrategy],
 })
 export class AuthModule {}
