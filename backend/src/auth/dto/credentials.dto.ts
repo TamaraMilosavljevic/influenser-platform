@@ -9,12 +9,12 @@ export class Credentials {
   password: string;
 }
 
-export class AccessTokenData {
+export class JwtPayload {
   sub: string;
   email: string;
   role: string;
 }
 
 export const jwtConstants = {
-  secret: process.env.JWT_SECRET || '',
+  secret: process.env.JWT_SECRET || "",
 };

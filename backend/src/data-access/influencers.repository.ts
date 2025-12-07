@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "./prisma.service";
-import { CreateInfluencer } from "src/influencers/types/influencer.type";
-import { Influencer } from "generated/prisma/client";
+import { CreateInfluencer, UpdateInfluencer } from "src/influencers/types/influencer.type";
 
 @Injectable()
 export class InfluencersRepository {
@@ -11,9 +10,9 @@ export class InfluencersRepository {
     return this.db.user.create({ data });
   }
 
-  async update(influencerId: string, data: Partial<Influencer>) {
-    return this.db.user.update({
-      where: { id: influencerId },
+  async update(id: string, data: UpdateInfluencer) {
+    return this.db.influencer.update({
+      where: { userId: id },
       data,
     });
   }

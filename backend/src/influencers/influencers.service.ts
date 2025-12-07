@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { CreateInfluencerDto } from "./dto/create-influencer.dto";
 import { UpdateInfluencerDto } from "./dto/update-influencer.dto";
 import { InfluencersRepository } from "src/data-access/influencers.repository";
@@ -13,8 +13,13 @@ export class InfluencersService {
     });
   }
 
-  publish(influencerId: string) {
-    return this.influencersRepository.update(influencerId, { isPrivate: true });
+  async publish(id: string) {
+    try {
+      await this.influencersRepository.update(id, { isPrivate: false });
+      return { message: "Influencer profile published successfully." };
+    } catch (error) {
+      throw new InternalServerErrorException("Failed to publish influencer profile.");
+    }
   }
 
   findAll() {
