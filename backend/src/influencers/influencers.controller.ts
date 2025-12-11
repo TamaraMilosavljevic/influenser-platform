@@ -10,6 +10,8 @@ import {
   HttpStatus,
   UsePipes,
   ValidationPipe,
+  Query,
+  ParseBoolPipe,
 } from "@nestjs/common";
 import { InfluencersService } from "./influencers.service";
 import { CreateInfluencerDto } from "./dto/create-influencer.dto";
@@ -70,10 +72,10 @@ export class InfluencersController {
     },
   })
   @Roles("INFLUENCER", "ADMIN")
-  @Post("/publish")
+  @Post("/privacy")
   @HttpCode(HttpStatus.OK)
-  publish(@GetUser() user: JwtPayload) {
-    return this.influencersService.publish(user.id);
+  publish(@GetUser() user: JwtPayload, @Query("isPrivate", ParseBoolPipe) isPrivate: boolean) {
+    return this.influencersService.setIsPrivate(user.id, isPrivate);
   }
 
   @Get()

@@ -5,7 +5,11 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}/influencers/publish
+  url: {{baseUrl}}/influencers/privacy?isPrivate=true
   body: none
   auth: inherit
+}
+
+params:query {
+  isPrivate: true
 }

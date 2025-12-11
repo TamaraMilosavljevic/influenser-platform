@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { Role } from "generated/prisma/enums";
 
 export class CreateInfluencerDto {
@@ -13,4 +13,12 @@ export class CreateInfluencerDto {
 
     @IsNotEmpty()
     role: Role = Role.INFLUENCER;
+
+    @IsNotEmpty()
+    @IsString()
+    name: string;
+
+    @IsString()
+    @IsOptional()
+    headline: string;
 }

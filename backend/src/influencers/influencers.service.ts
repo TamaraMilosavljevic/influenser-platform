@@ -29,13 +29,13 @@ export class InfluencersService {
     }
   }
 
-  async publish(id: number) {
+  async setIsPrivate(id: number, isPrivate = false) {
     try {
-      await this.influencersRepository.update(id, { isPrivate: false });
-      return { message: "Influencer profile published successfully." };
+      await this.influencersRepository.update(id, { isPrivate });
+      return { message: "Influencer profile privacy updated successfully." };
     } catch (error) {
       throw new InternalServerErrorException(
-        "Failed to publish influencer profile."
+        "Failed to update influencer profile privacy."
       );
     }
   }

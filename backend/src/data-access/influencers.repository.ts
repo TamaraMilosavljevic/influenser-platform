@@ -7,7 +7,20 @@ export class InfluencersRepository {
   constructor(private db: PrismaService) {}
 
   async createInfluencer(data: CreateInfluencer) {
-    return this.db.user.create({ data });
+    const userData = {
+      email: data.email,
+      password: data.password,
+      role: data.role,
+    };
+    const influencerData = {
+      name: data.name,
+      headline: data.headline,
+    };
+    const user = await this.db.user.create({ data: { ...userData} });
+    const influencer = await this.db.influencer.create({
+      data: { ...influencerData, userId: user.id },
+    });
+    return {...influencer, email: user.email, role: user.role };
   }
 
   async update(id: number, data: UpdateInfluencer) {
