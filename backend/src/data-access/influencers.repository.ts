@@ -29,7 +29,7 @@ export class InfluencersRepository {
     const influencerData: Record<string, any> = {};
 
     // Polja koja pripadaju Influencer entitetu
-    const possibleInfluencerFields = ['name', 'headline']; 
+    const possibleInfluencerFields = ['name', 'headline', 'experience', 'isPrivate']; 
     
     for (const key of possibleInfluencerFields) {
         // Provera da li je polje prisutno i da li nije undefined
