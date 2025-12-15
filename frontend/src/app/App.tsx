@@ -1,4 +1,4 @@
-import { AuthTabsCard } from "@/components/AuthTabsCard";
+import AuthTabsCard from "@/components/AuthTabsCard";
 
 function App() {
   return (

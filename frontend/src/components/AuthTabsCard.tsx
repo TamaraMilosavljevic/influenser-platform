@@ -5,9 +5,8 @@ import SignIn from "@/pages/SignIn";
 import Register from "@/pages/Register";
 import { useState } from "react";
 
-export function AuthTabsCard() {
+const AuthTabsCard: React.FC = () => {
   const [tab, setTab] = useState<"signin" | "register">("signin");
-
   return (
     <div className="h-screen w-full flex flex-row items-center justify-between">
       <div className="flex flex-1 justify-center items-center flex-col relative text-primary px-3 gap-10">
@@ -25,7 +24,11 @@ export function AuthTabsCard() {
       </div>
 
       <div className="max-w-1/2 h-screen relative flex flex-col flex-1 bg-background pt-6">
-        <Tabs value={tab} onValueChange={setTab} className="w-full">
+        <Tabs
+          value={tab}
+          onValueChange={(value) => setTab(value as "signin" | "register")}
+          className="w-full"
+        >
           <TabsList className="relative flex w-full items-end justify-stretch rounded-t-xl border-border bg-transparent px-0">
             <TabsTrigger
               value="signin"
@@ -98,4 +101,6 @@ export function AuthTabsCard() {
       </div>
     </div>
   );
-}
+};
+
+export default AuthTabsCard;
