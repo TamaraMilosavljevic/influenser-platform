@@ -1,0 +1,19 @@
+meta {
+  name: Create new influencer
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/influencers
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "test1@gmail.com",
+    "password": "",
+    "name": "Pera Peric"
+  }
+}
