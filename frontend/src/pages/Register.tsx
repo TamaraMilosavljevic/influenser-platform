@@ -9,7 +9,6 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -61,6 +60,8 @@ const formSchema = z.object({
     .max(32, "Email title must be at most 32 characters."),
 });
 
+const combinedSchema = formSchema.merge(passwordConfirmationSchema);
+
 const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
   const form = useForm({
     defaultValues: {
@@ -71,7 +72,7 @@ const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
       confirmPassword: "",
     },
     validators: {
-      onSubmit: formSchema && passwordConfirmationSchema,
+      onSubmit: combinedSchema,
     },
     onSubmit: async ({ value }) => {
       toast("You submitted the following values:", {
