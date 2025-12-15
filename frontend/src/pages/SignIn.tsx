@@ -2,7 +2,6 @@
 import { useForm } from "@tanstack/react-form";
 import { toast, Toaster } from "sonner";
 import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -44,7 +43,7 @@ const passwordConfirmationSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match.",
-    path: ["confirmPassword"], // Specifies where the error message should be attached
+    path: ["confirmPassword"],
   });
 
 const formSchema = z.object({
@@ -61,6 +60,7 @@ const formSchema = z.object({
     .email()
     .min(5, "Email title must be at least 5 characters.")
     .max(32, "Email title must be at most 32 characters."),
+  rememberMe: z.boolean(),
 });
 
 const combinedSchema = formSchema.merge(passwordConfirmationSchema);
@@ -72,9 +72,11 @@ const SignIn = ({ onSwitchToSignUp }: { onSwitchToSignUp: () => void }) => {
       email: "",
       username: "",
       password: "",
+      rememberMe: false,
     },
     validators: {
       onSubmit: combinedSchema,
+      onBlur: combinedSchema,
     },
     onSubmit: async ({ value }) => {
       toast("You submitted the following values:", {
@@ -98,17 +100,20 @@ const SignIn = ({ onSwitchToSignUp }: { onSwitchToSignUp: () => void }) => {
     name: "password" | "username" | "fullname" | "email";
     icon: string;
     placeholder: string;
+    type: string;
   }> = [
     {
       name: "username",
       icon: "alternate_email",
       placeholder: "Broj telefona, e-mail ili korisnicko ime",
+      type: "text",
     },
 
     {
       name: "password",
       icon: "lock",
       placeholder: "Lozinka",
+      type: "password",
     },
   ];
 
@@ -118,15 +123,12 @@ const SignIn = ({ onSwitchToSignUp }: { onSwitchToSignUp: () => void }) => {
         <CardHeader></CardHeader>
         <CardContent>
           <form
-            id="sign-up-form"
+            id="sign-in-form"
             className="flex flex-col gap-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              form.handleSubmit();
-            }}
+            onSubmit={form.handleSubmit}
           >
             <FieldGroup>
-              {formFieldsArr.map(({ name, icon, placeholder }) => (
+              {formFieldsArr.map(({ name, icon, placeholder, type }) => (
                 <form.Field
                   name={name}
                   key={name}
@@ -148,6 +150,7 @@ const SignIn = ({ onSwitchToSignUp }: { onSwitchToSignUp: () => void }) => {
                             aria-invalid={isInvalid}
                             placeholder={placeholder}
                             autoComplete="off"
+                            type={type}
                           />
                         </InputGroup>
 
@@ -161,10 +164,18 @@ const SignIn = ({ onSwitchToSignUp }: { onSwitchToSignUp: () => void }) => {
               ))}
             </FieldGroup>
             <FieldGroup className="flex flex-col md:flex-row justify-between items-baseline py-5">
-              <div className="flex items-center gap-3">
-                <Checkbox id="remember" />
-                <Label htmlFor="remember">Zapamti me</Label>
-              </div>
+              <form.Field name="rememberMe">
+                {(field) => (
+                  <div className="flex items-center gap-3">
+                    <Checkbox
+                      id="rememberMe"
+                      checked={field.state.value ?? false}
+                      onCheckedChange={(val) => field.handleChange(!!val)}
+                    />
+                    <Label htmlFor="rememberMe">Zapamti me</Label>
+                  </div>
+                )}
+              </form.Field>
               <p className="mt-4 text-sm">
                 <Button
                   type="button"
@@ -175,20 +186,15 @@ const SignIn = ({ onSwitchToSignUp }: { onSwitchToSignUp: () => void }) => {
                 </Button>
               </p>
             </FieldGroup>
+            <Field orientation="horizontal">
+              <Button type="submit" className="outline-none w-full" size="lg">
+                Prijavite se
+              </Button>
+            </Field>
           </form>
         </CardContent>
         <CardFooter>
           <div className="flex flex-col w-full gap-6 justify-center items-center">
-            <Field orientation="horizontal">
-              <Button
-                type="submit"
-                form="sign-up-form"
-                className="outline-none w-full"
-                size="lg"
-              >
-                Prijavite se
-              </Button>
-            </Field>
             <Field className="flex flex-row flex-1 gap-8 justify-center items-center">
               <Separator
                 orientation="horizontal"

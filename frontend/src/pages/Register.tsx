@@ -2,7 +2,6 @@
 import { useForm } from "@tanstack/react-form";
 import { toast, Toaster } from "sonner";
 import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -41,7 +40,7 @@ const passwordConfirmationSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match.",
-    path: ["confirmPassword"], // Specifies where the error message should be attached
+    path: ["confirmPassword"],
   });
 
 const formSchema = z.object({
@@ -58,6 +57,12 @@ const formSchema = z.object({
     .email()
     .min(5, "Email title must be at least 5 characters.")
     .max(32, "Email title must be at most 32 characters."),
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions",
+  }),
+  rememberMe: z.boolean().refine((val) => val === true, {
+    message: "Remember your password",
+  }),
 });
 
 const combinedSchema = formSchema.merge(passwordConfirmationSchema);
@@ -70,11 +75,15 @@ const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
       username: "",
       password: "",
       confirmPassword: "",
+      rememberMe: false,
+      termsAccepted: false,
     },
     validators: {
       onSubmit: combinedSchema,
+      onBlur: combinedSchema,
     },
     onSubmit: async ({ value }) => {
+      console.log(`submitujem ... ${JSON.stringify(value)}`);
       toast("You submitted the following values:", {
         description: (
           <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
@@ -96,36 +105,43 @@ const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
     name: "password" | "confirmPassword" | "username" | "fullname" | "email";
     icon: string;
     placeholder: string;
+    type: string;
   }> = [
     {
       name: "fullname",
       icon: "person",
       placeholder: "Ime i Prezime",
+      type: "text",
     },
     {
       name: "username",
       icon: "alternate_email",
       placeholder: "Korisnicko ime",
+      type: "text",
     },
     {
       name: "email",
       icon: "Mail",
       placeholder: "E-mail",
+      type: "email",
     },
     {
       name: "password",
       icon: "lock",
       placeholder: "Lozinka",
+      type: "password",
     },
     {
       name: "confirmPassword",
       icon: "lock",
       placeholder: "Potvrdi lozinku",
+      type: "password",
     },
   ];
 
   return (
     <div className="h-screen w-full flex flex-col justify-start items-center">
+      <Toaster />
       <Card className="w-full">
         <CardHeader></CardHeader>
         <CardContent className="w-100%">
@@ -138,7 +154,7 @@ const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
             }}
           >
             <FieldGroup>
-              {formFieldsArr.map(({ name, icon, placeholder }) => (
+              {formFieldsArr.map(({ name, icon, placeholder, type }) => (
                 <form.Field
                   name={name}
                   key={name}
@@ -161,6 +177,7 @@ const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
                             aria-invalid={isInvalid}
                             placeholder={placeholder}
                             autoComplete="off"
+                            type={type}
                           />
                         </InputGroup>
 
@@ -174,29 +191,42 @@ const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
               ))}
             </FieldGroup>
             <FieldGroup className="flex flex-col gap-2.5 py-5">
-              <div className="flex items-center gap-3">
-                <Checkbox id="terms" />
-                <Label htmlFor="terms">Zapamti me</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Checkbox id="terms" />
-                <Label htmlFor="terms">Prihvatam uslove koriscenja</Label>
-              </div>
+              <form.Field name="rememberMe">
+                {(field) => (
+                  <div className="flex items-center gap-3">
+                    <Checkbox
+                      id="rememberMe"
+                      checked={field.state.value ?? false}
+                      onCheckedChange={(val) => field.handleChange(!!val)}
+                    />
+                    <Label htmlFor="rememberMe">Zapamti me</Label>
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="termsAccepted">
+                {(field) => (
+                  <div className="flex items-center gap-3">
+                    <Checkbox
+                      id="termsAccepted"
+                      checked={field.state.value}
+                      onCheckedChange={(val) => field.handleChange(!!val)}
+                    />
+                    <Label htmlFor="termsAccepted">
+                      Prihvatam uslove koriscenja
+                    </Label>
+                  </div>
+                )}
+              </form.Field>
             </FieldGroup>
+            <Field orientation="horizontal">
+              <Button type="submit" className="w-full outline-none" size="lg">
+                Registrujte se
+              </Button>
+            </Field>
           </form>
         </CardContent>
         <CardFooter>
           <div className="flex flex-col w-full">
-            <Field orientation="horizontal">
-              <Button
-                type="submit"
-                className="w-full outline-none"
-                form="bug-report-form"
-                size="lg"
-              >
-                Registrujte se
-              </Button>
-            </Field>
             <Field
               className="flex flex-row flex-1 justify-center items-center gap-2"
               orientation="horizontal"
@@ -214,8 +244,6 @@ const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
               </p>
             </Field>
           </div>
-
-          <Toaster />
         </CardFooter>
       </Card>
     </div>
