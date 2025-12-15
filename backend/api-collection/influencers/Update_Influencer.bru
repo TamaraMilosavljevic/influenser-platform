@@ -1,0 +1,23 @@
+meta {
+  name: Update_Influencer
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:3000/influencers/me
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Zoran Zoric",
+    "headline": "Nezaposlen",
+    "email": "novi.email@primer.com"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

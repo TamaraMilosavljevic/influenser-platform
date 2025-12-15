@@ -91,7 +91,7 @@ export class InfluencersController {
   })
   @Roles("INFLUENCER", "ADMIN")
   @Patch("me")
-  updateMyProfile(
+  update(
     @GetUser() user: JwtPayload, 
     @Body() updateInfluencerDto: UpdateInfluencerDto 
   ) {
@@ -108,13 +108,13 @@ export class InfluencersController {
     return this.influencersService.findOne(+id);
   }
 
-  @Patch(":id")
-  update(
-    @Param("id") id: string,
-    @Body() updateInfluencerDto: UpdateInfluencerDto
-  ) {
-    return this.influencersService.update(+id, updateInfluencerDto);
-  }
+  // @Patch(":id")
+  // update(
+  //   @Param("id") id: string,
+  //   @Body() updateInfluencerDto: UpdateInfluencerDto
+  // ) {
+  //   return this.influencersService.update(+id, updateInfluencerDto);
+  // }
 
   @Delete(":id")
   remove(@Param("id") id: string) {
