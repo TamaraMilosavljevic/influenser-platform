@@ -4,12 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { faker } from "@faker-js/faker";
 import { useAuthStore } from "@/auth/authStore";
 import { Separator } from "@radix-ui/react-separator";
+import MockImage from "@/assets/img/MockImage";
 
 export default function ProfilePage(): React.ReactElement {
-  const generateRandomImage = () => {
-    return faker.image.avatar();
-  };
-
   const user = useAuthStore((s) => s.user);
 
   if (!user) console.log("No user found in auth store");
@@ -38,11 +35,7 @@ export default function ProfilePage(): React.ReactElement {
     <div className="min-h-screen bg-gray-50">
       <div className="relative h-64 bg-linear-to-r from-blue-400 to-purple-500">
         <div className="absolute bottom-0 left-8 transform translate-y-1/2">
-          <img
-            src={generateRandomImage()}
-            alt="Profile"
-            className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
-          />
+          <MockImage />
         </div>
       </div>
 

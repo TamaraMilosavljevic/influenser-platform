@@ -19,6 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@radix-ui/react-separator";
 import type { User } from "@/auth/auth.types";
 import { useAuthStore } from "@/auth/authStore";
+import type { SignInProps } from "./signin.types";
 
 const passwordSchema = z
   .string()
@@ -66,14 +67,8 @@ const formSchema = z.object({
 
 const combinedSchema = formSchema.merge(passwordConfirmationSchema);
 
-const SignIn = ({
-  onSwitchToSignUp,
-  onLogin,
-  onGuest,
-}: {
-  onSwitchToSignUp: () => void;
-  onLogin: (user: User, token: string) => void;
-  onGuest: () => void;
+const SignIn: React.FC<{ signinProps: SignInProps }> = ({
+  signinProps: { onSwitchToSignUp, onLogin, onGuest },
 }) => {
   const { login } = useAuthStore();
 
