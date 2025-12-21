@@ -91,11 +91,10 @@ export class InfluencersController {
   })
   @Roles("INFLUENCER", "ADMIN")
   @Patch("me")
-  update(
-    @GetUser() user: JwtPayload, 
-    @Body() updateInfluencerDto: UpdateInfluencerDto 
-  ) {
-    return this.influencersService.update(user.id, updateInfluencerDto);
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, skipMissingProperties: true }))
+  update(@GetUser() user: JwtPayload, @Body() updateInfluencerDto: UpdateInfluencerDto) {
+   return this.influencersService.update(user.id, updateInfluencerDto);
   }
   /// Do ovde sam pisao
   @Get()
@@ -107,14 +106,6 @@ export class InfluencersController {
   findOne(@Param("id") id: string) {
     return this.influencersService.findOne(+id);
   }
-
-  // @Patch(":id")
-  // update(
-  //   @Param("id") id: string,
-  //   @Body() updateInfluencerDto: UpdateInfluencerDto
-  // ) {
-  //   return this.influencersService.update(+id, updateInfluencerDto);
-  // }
 
   @Delete(":id")
   remove(@Param("id") id: string) {
