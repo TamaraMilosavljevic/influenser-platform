@@ -46,7 +46,7 @@ export class InfluencersService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} influencer`;
+    return this.influencersRepository.findOne(id);
   }
 
 

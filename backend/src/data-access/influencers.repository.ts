@@ -19,6 +19,8 @@ export class InfluencersRepository {
     const influencerData = {
       name: data.name,
       headline: data.headline,
+      values: data.values,
+      industries: data.industries,
     };
     const user = await this.db.user.create({ data: { ...userData } });
     const influencer = await this.db.influencer.create({
@@ -70,6 +72,12 @@ export class InfluencersRepository {
         values: true,
       },
       where: { ...filters, isPrivate: false },
+    });
+  }
+
+  async findOne(id: number) {
+    return this.db.influencer.findUnique({
+      where: { userId: id, isPrivate: false }
     });
   }
 }
