@@ -75,7 +75,7 @@ const AuthTabsCard: React.FC = () => {
   return (
     <div className="h-screen w-full flex md:flex-row flex-col items-center justify-between">
       <div className="flex flex-1 justify-center items-center flex-col relative text-primary px-3 gap-10">
-        <Card className="md: min-h-[600px] w-1/2 items-center justify-center flex flex-col border border-primary">
+        <Card className="md: min-h-150 w-1/2 items-center justify-center flex flex-col border border-primary">
           <div className="max-h-32 max-w-32">
             <img src={HourglassIcon} className="w-full" alt="Slika pescanika" />
           </div>
