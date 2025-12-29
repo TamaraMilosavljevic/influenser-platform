@@ -34,13 +34,14 @@ const useAuthStore = create<AuthState>()(
           isLoading: false,
         }),
 
-      logout: () =>
+      logout: () => {
         set({
           user: null,
           token: null,
           isAuthenticated: false,
           isLoading: false,
-        }),
+        });
+      },
 
       loginAsGuest: () =>
         set({

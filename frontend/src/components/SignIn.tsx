@@ -20,6 +20,7 @@ import { Separator } from "@radix-ui/react-separator";
 import type { User } from "@/auth/auth.types";
 import { useAuthStore } from "@/auth/authStore";
 import type { SignInProps } from "./signin.types";
+import { useNavigate } from "@tanstack/react-router";
 
 const passwordSchema = z
   .string()
@@ -38,83 +39,102 @@ const passwordSchema = z
     message: "Password must contain at least one special character.",
   });
 
-const passwordConfirmationSchema = z
-  .object({
-    password: passwordSchema,
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match.",
-    path: ["confirmPassword"],
-  });
+// const passwordConfirmationSchema = z
+//   .object({
+//     password: passwordSchema,
+//     confirmPassword: z.string(),
+//   })
+//   .refine((data) => data.password === data.confirmPassword, {
+//     message: "Passwords don't match.",
+//     path: ["confirmPassword"],
+//   });
 
-const formSchema = z.object({
-  username: z
-    .string()
-    .min(5, "Username must be at least 5 characters.")
-    .max(12, "Username title must be at most 32 characters."),
-  fullname: z
-    .string()
-    .min(5, "Fullname must be at least 20 characters.")
-    .max(100, "Fullname must be at most 100 characters.")
-    .includes(" "),
-  email: z
-    .email()
-    .min(5, "Email title must be at least 5 characters.")
-    .max(32, "Email title must be at most 32 characters."),
+// const formSchema = z.object({
+//   username: z
+//     .string()
+//     .min(5, "Username must be at least 5 characters.")
+//     .max(12, "Username title must be at most 32 characters."),
+//   fullname: z
+//     .string()
+//     .min(5, "Fullname must be at least 20 characters.")
+//     .max(100, "Fullname must be at most 100 characters.")
+//     .includes(" "),
+//   email: z
+//     .email()
+//     .min(5, "Email title must be at least 5 characters.")
+//     .max(32, "Email title must be at most 32 characters."),
+//   rememberMe: z.boolean(),
+// });
+const signInSchema = z.object({
+  username: z.string().min(1, "Username is required."),
+  password: passwordSchema, // or z.string().min(1) if you don’t want strict rules on sign-in
   rememberMe: z.boolean(),
 });
 
-const combinedSchema = formSchema.merge(passwordConfirmationSchema);
+const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, onGuest }) => {
+  const login = useAuthStore((s) => s.login);
+  const navigate = useNavigate();
 
-const SignIn: React.FC<SignInProps> = ({
-  onSwitchToSignUp,
-  onLogin,
-  onGuest,
-}) => {
-  const { login } = useAuthStore();
+  // const handleSubmit = async ({
+  //   value,
+  // }: {
+  //   value: {
+  //     username: string;
+  //     email: string;
+  //     password: string;
+  //     rememberMe: boolean;
+  //   };
+  // }) => {
+  //   const { username, email, password } = value;
+  //   console.log("payload", value);
+  //   const userFromFormValue: User = {
+  //     username: username,
+  //     email: email,
+  //     headline: "Signed in",
+  //     role: "user",
+  //     password: password,
+  //   };
+  //   onLogin(userFromFormValue, "token");
 
-  const handleSubmit = async ({
-    value,
-  }: {
-    value: {
-      username: string;
-      email: string;
-      password: string;
-      rememberMe: boolean;
-    };
-  }) => {
-    const { username, email, password } = value;
-    console.log("payload", value);
-    const userFromFormValue: User = {
-      username: username,
-      email: email,
-      headline: "Signed in",
-      role: "user",
-      password: password,
-    };
-    onLogin(userFromFormValue, "token");
-
-    // mock found user
-    login(userFromFormValue, "token");
-  };
+  //   // mock found user
+  //   login(userFromFormValue, "token");
+  // };
 
   const form = useForm({
     defaultValues: {
-      email: "",
       username: "",
       password: "",
       rememberMe: false,
     },
     validators: {
-      onSubmit: combinedSchema,
-      onBlur: combinedSchema,
+      onSubmit: signInSchema,
+      onBlur: signInSchema,
     },
-    onSubmit: handleSubmit,
+    onSubmit: async ({ value }) => {
+      console.log("sksksks");
+      const { username, password } = value;
+
+      const user: User = {
+        fullname: "User",
+        email: "user@local",
+        username: username || "username",
+        headline: "Login",
+        role: "user",
+        password,
+      };
+
+      login(user, "token");
+
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({ isAuthenticated: true, user })
+      );
+      navigate({ to: "/profile" });
+    },
   });
 
   const formFieldsArr: Array<{
-    name: "password" | "username" | "email";
+    name: "password" | "username";
     icon: string;
     placeholder: string;
     type: string;
@@ -142,7 +162,11 @@ const SignIn: React.FC<SignInProps> = ({
           <form
             id="sign-in-form"
             className="flex flex-col gap-4"
-            onSubmit={form.handleSubmit}
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
           >
             <FieldGroup>
               {formFieldsArr.map(({ name, icon, placeholder, type }) => (

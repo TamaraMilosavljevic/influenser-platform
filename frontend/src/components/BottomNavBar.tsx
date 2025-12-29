@@ -2,16 +2,26 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { GoogleFontIcon } from "@/assets/icons/GoogleFontIcon";
 
-import type { BottomNavProps } from "./bottomNav.types";
+import type { BottomNavProps, NavActionItem } from "./bottomNav.types";
 import { BottomNavItem } from "./BottomNavItem";
+import { useAuthStore } from "@/auth/authStore";
+import { useNavigate } from "@tanstack/react-router";
 
 export function BottomNav({
   items,
-  logout,
   className,
   maxWidthClassName = "max-w-screen-md",
   heightPx = 60,
 }: BottomNavProps) {
+  const logoutUser = useAuthStore((s) => s.logout);
+  const navigate = useNavigate();
+
+  const logout: NavActionItem = {
+    key: "logout",
+    label: "Logout",
+    icon: "logout",
+  };
+
   return (
     <nav
       className={cn(
@@ -36,25 +46,26 @@ export function BottomNav({
           </div>
         ))}
 
-        {logout ? (
-          <Button
-            type="button"
-            variant={logout.variant ?? "ghost"}
-            onClick={logout.onClick}
-            className={cn(
-              "w-full rounded-none px-2",
-              "flex flex-col items-center justify-center gap-1",
-              "text-destructive hover:text-destructive hover:bg-destructive/10"
-            )}
-            style={{ height: heightPx }}
-            aria-label={logout.ariaLabel ?? logout.label}
-          >
-            <GoogleFontIcon icon={logout.icon} />
-            <span className="text-[12px] leading-none whitespace-nowrap">
-              {logout.label}
-            </span>
-          </Button>
-        ) : null}
+        <Button
+          type="button"
+          variant={logout.variant ?? "ghost"}
+          onClick={() => {
+            logoutUser();
+            navigate({ to: "/auth", replace: true });
+          }}
+          className={cn(
+            "w-full rounded-none px-2",
+            "flex flex-col items-center justify-center gap-1",
+            "text-destructive hover:text-destructive hover:bg-destructive/10"
+          )}
+          style={{ height: heightPx }}
+          aria-label={logout.ariaLabel ?? logout.label}
+        >
+          <GoogleFontIcon icon={logout.icon} />
+          <span className="text-[12px] leading-none whitespace-nowrap">
+            {logout.label}
+          </span>
+        </Button>
       </div>
     </nav>
   );

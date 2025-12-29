@@ -2,10 +2,7 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { getAuthSnapshot, useAuthStore } from "@/auth/authStore";
 import { hydrateAuthFromStorage } from "@/services/rehydrate";
 import { BottomNav } from "@/components/BottomNavBar";
-import type {
-  BottomNavItem,
-  NavActionItem,
-} from "@/components/bottomNav.types";
+import type { BottomNavItem } from "@/components/bottomNav.types";
 
 export const Route = createFileRoute("/_private")({
   beforeLoad: () => {
@@ -25,6 +22,7 @@ export const Route = createFileRoute("/_private")({
       (isAuthenticated && getAuthSnapshot().user?.role === "guest")
     ) {
       console.log(isAuthenticated, hasHydrated, "current state");
+      throw redirect({ to: "/auth" });
     }
   },
   component: PrivateLayout,
@@ -50,22 +48,12 @@ const navItems: BottomNavItem[] = [
   },
 ];
 
-const logoutItem: NavActionItem = {
-  key: "logout",
-  label: "Logout",
-  icon: "logout",
-  onClick: async () => {
-    const { logout } = useAuthStore.getState();
-    logout();
-  },
-};
-
 function PrivateLayout() {
   return (
     <div>
       <main>
         <Outlet />
-        <BottomNav items={navItems} logout={logoutItem} heightPx={60} />
+        <BottomNav items={navItems} heightPx={60} />
       </main>
     </div>
   );
