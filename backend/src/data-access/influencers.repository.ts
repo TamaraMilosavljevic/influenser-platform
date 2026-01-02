@@ -4,6 +4,7 @@ import {
   CreateInfluencer,
   UpdateInfluencer,
 } from "src/influencers/types/influencer.type";
+import { SearchQueryDto } from "src/influencers/dto/search-query.dto";
 
 @Injectable()
 export class InfluencersRepository {
@@ -18,6 +19,8 @@ export class InfluencersRepository {
     const influencerData = {
       name: data.name,
       headline: data.headline,
+      values: data.values,
+      industries: data.industries,
     };
     const user = await this.db.user.create({ data: { ...userData } });
     const influencer = await this.db.influencer.create({
@@ -33,6 +36,48 @@ export class InfluencersRepository {
       },
       data: data,
     });
+  }
 
+  async findAll(searchQuery: SearchQueryDto) {
+    const { name, industry, value } = searchQuery;
+
+    const filters: any = {};
+
+    if (name) {
+      filters.name = {
+        contains: name,
+        mode: "insensitive",
+      };
+    }
+
+    if (industry) {
+      filters.industries = {
+        has: industry,
+      };
+    }
+
+    if (value) {
+      filters.values = {
+        has: value,
+      };
+    }
+
+    return this.db.influencer.findMany({
+      select: {
+        userId: true,
+        name: true,
+        headline: true,
+        experience: true,
+        industries: true,
+        values: true,
+      },
+      where: { ...filters, isPrivate: false },
+    });
+  }
+
+  async findOne(id: number) {
+    return this.db.influencer.findUnique({
+      where: { userId: id, isPrivate: false }
+    });
   }
 }
