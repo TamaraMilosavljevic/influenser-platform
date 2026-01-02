@@ -12,6 +12,7 @@ import {
   ValidationPipe,
   Query,
   ParseBoolPipe,
+  ParseIntPipe,
 } from "@nestjs/common";
 import { InfluencersService } from "./influencers.service";
 import { CreateInfluencerDto } from "./dto/create-influencer.dto";
@@ -129,8 +130,21 @@ export class InfluencersController {
     return this.influencersService.findAll(searchQuery);
   }
 
+  @ApiOperation({
+    summary: "Search one influencer",
+    description: "This endpoint retrieves an influencer.",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Successfully retrieved",
+    content: {
+      "application/json": {
+        schema: GetInfluencerSchema
+      },
+    },
+  })
   @Get(":id")
-  findOne(@Param("id") id: string) {
+  findOne(@Param("id", ParseIntPipe) id: number) {
     return this.influencersService.findOne(+id);
   }
 
