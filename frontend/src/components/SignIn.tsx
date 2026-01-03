@@ -8,10 +8,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Field, FieldError, FieldGroup } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { GoogleFontIcon } from "@/assets/icons/GoogleFontIcon";
-import { InputGroup, InputGroupButton } from "@/components/ui/input-group";
+import { Field, FieldGroup } from "@/components/ui/field";
 import google from "../assets/icons/google.svg";
 import apple from "../assets/icons/apple.svg";
 import { Label } from "@/components/ui/label";
@@ -21,6 +18,7 @@ import type { User } from "@/auth/auth.types";
 import { useAuthStore } from "@/auth/authStore";
 import type { SignInProps } from "./signin.types";
 import { useNavigate } from "@tanstack/react-router";
+import FormField from "./FormField";
 
 const passwordSchema = z
   .string()
@@ -176,28 +174,15 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, onGuest }) => {
                     const isInvalid =
                       field.state.meta.isTouched && !field.state.meta.isValid;
                     return (
-                      <Field data-invalid={isInvalid}>
-                        <InputGroup>
-                          <InputGroupButton className="border-none shadow-none">
-                            <GoogleFontIcon icon={icon} />
-                          </InputGroupButton>
-                          <Input
-                            id={field.name}
-                            name={field.name}
-                            value={field.state.value}
-                            onBlur={field.handleBlur}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            aria-invalid={isInvalid}
-                            placeholder={placeholder}
-                            autoComplete="off"
-                            type={type}
-                          />
-                        </InputGroup>
-
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
-                      </Field>
+                      <FormField
+                        field={field}
+                        name={field.name}
+                        icon={icon}
+                        inputType={type}
+                        isInvalid={isInvalid}
+                        placeholder={placeholder}
+                        key={name}
+                      />
                     );
                   }}
                 />

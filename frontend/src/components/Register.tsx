@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { GoogleFontIcon } from "@/assets/icons/GoogleFontIcon";
 import { InputGroup, InputGroupButton } from "@/components/ui/input-group";
 import type { User } from "@/auth/auth.types";
+import FormField from "./FormField";
 
 const passwordSchema = z
   .string()
@@ -162,29 +163,15 @@ const Register = ({
                     const isInvalid =
                       field.state.meta.isTouched && !field.state.meta.isValid;
                     return (
-                      <Field data-invalid={isInvalid}>
-                        <InputGroup>
-                          <InputGroupButton className="border-none shadow-none outline-l-none">
-                            <GoogleFontIcon icon={icon} />
-                          </InputGroupButton>
-                          <Input
-                            id={field.name}
-                            className="border-l-0 outline-l-0 shadow-none"
-                            name={field.name}
-                            value={field.state.value}
-                            onBlur={field.handleBlur}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            aria-invalid={isInvalid}
-                            placeholder={placeholder}
-                            autoComplete="off"
-                            type={type}
-                          />
-                        </InputGroup>
-
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
-                      </Field>
+                      <FormField
+                        field={field}
+                        name={field.name}
+                        icon={icon}
+                        inputType={type}
+                        isInvalid={isInvalid}
+                        placeholder={placeholder}
+                        key={name}
+                      />
                     );
                   }}
                 />
