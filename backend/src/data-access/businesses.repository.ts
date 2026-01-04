@@ -6,7 +6,7 @@ import {
 } from "src/businesses/types/business.type";
 
 @Injectable()
-export class businessRepository {
+export class BusinessRepository {
   constructor(private db: PrismaService) {}
 
   async createBusiness(data: CreateBusiness) {

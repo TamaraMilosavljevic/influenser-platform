@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBusinessDto } from './dto/create-business.dto';
 import { UpdateBusinessDto } from './dto/update-business.dto';
-import { businessRepository } from 'src/data-access/businesses.repository';
+import { BusinessRepository } from 'src/data-access/businesses.repository';
 import { PasswordService } from "src/auth/password.service";
 
 @Injectable()
 export class BusinessesService {
 
   constructor(
-      private businessesRepository: businessRepository,
+      private businessesRepository: BusinessRepository,
       private passwordService: PasswordService
     ) { }
 
