@@ -22,7 +22,6 @@ import { GetUser } from "src/auth/get-user.decorator";
 import { JwtPayload } from "src/auth/dto/credentials.dto";
 import { Roles } from "src/auth/roles.decorator";
 import { Public } from "src/auth/public.decorator";
-import { Role } from "generated/prisma/enums";
 
 @ApiTags("Influencers")
 @Controller("influencers")

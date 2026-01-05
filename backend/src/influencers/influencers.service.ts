@@ -8,7 +8,7 @@ import { PasswordService } from "src/auth/password.service";
 export class InfluencersService {
   constructor(
     private influencersRepository: InfluencersRepository,
-    private passwordService: PasswordService
+    private passwordService: PasswordService,
   ) { }
   async create(createInfluencerDto: CreateInfluencerDto) {
     const hashedPassword = await this.passwordService.hash(

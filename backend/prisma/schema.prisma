@@ -35,4 +35,16 @@ model Influencer {
   headline       String?
   experience     Int?
   isPrivate     Boolean  @default(true)
+
+  post       Post[]
+}
+
+model Post {
+  id          Int   @id @default(autoincrement())
+  userId      Int 
+  user        Influencer    @relation(fields: [userId], references: [userId])
+  text        String?
+  images      String[]
+  createdAt   DateTime
+  updatedAt   DateTime?
 }
