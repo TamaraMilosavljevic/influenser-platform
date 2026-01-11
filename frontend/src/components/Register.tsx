@@ -66,13 +66,7 @@ const formSchema = z.object({
 
 const combinedSchema = formSchema.merge(passwordConfirmationSchema);
 
-const Register = ({
-  onSwitchToSignIn,
-  onRegister,
-}: {
-  onSwitchToSignIn: () => void;
-  onRegister: (user: User, token: string) => void;
-}) => {
+const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
   const { isRegistered, setIsRegistered } = useAuthStore();
   const form = useForm({
     defaultValues: {

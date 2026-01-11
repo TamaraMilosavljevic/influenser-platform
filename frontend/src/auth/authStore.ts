@@ -15,6 +15,8 @@ const useAuthStore = create<AuthState>()(
       hasHydrated: false,
       setHasHydrated: (v) => set({ hasHydrated: v }),
 
+      setIsAuthenticated: (v: boolean) => set({ isAuthenticated: v }),
+
       setToken: (token: string | null) =>
         set({
           token,

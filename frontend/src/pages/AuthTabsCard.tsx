@@ -164,10 +164,7 @@ const AuthTabsCard: React.FC = () => {
                     transition-all duration-200
                   "
             >
-              <Register
-                onRegister={handleRegister}
-                onSwitchToSignIn={() => setTab("signin")}
-              />
+              <Register onSwitchToSignIn={() => setTab("signin")} />
             </TabsContent>
           </div>
         </Tabs>

@@ -26,4 +26,5 @@ export type AuthState = {
   getToken: (token: string | null) => void;
   setIsLoading: (isLoading: boolean) => void;
   setIsRegistered: (isRegistered: boolean) => void;
+  setIsAuthenticated: (IsAuthenticated: boolean) => void;
 };

@@ -7,10 +7,8 @@ export function hydrateAuthFromStorage() {
 
   try {
     const data = JSON.parse(raw);
-    authStore.register({
-      isAuthenticated: !!data.isAuthenticated,
-      user: data.user ?? null,
-    });
+    authStore.setUser(data.user ?? null);
+    authStore.setIsAuthenticated(!!data.isAuthenticated);
   } catch {
     localStorage.removeItem("auth");
   }
