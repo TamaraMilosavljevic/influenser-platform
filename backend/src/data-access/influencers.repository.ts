@@ -11,21 +11,17 @@ export class InfluencersRepository {
   constructor(private db: PrismaService) {}
 
   async createInfluencer(data: CreateInfluencer) {
-    const userData = {
-      email: data.email,
-      password: data.password,
-      role: data.role,
-    };
-    const influencerData = {
-      name: data.name,
-      headline: data.headline,
-      values: data.values,
-      industries: data.industries,
-    };
+
+    const { email, password, role, ...influencerData } = data;
+
+    const userData = { email, password, role };
+
     const user = await this.db.user.create({ data: { ...userData } });
+
     const influencer = await this.db.influencer.create({
       data: { ...influencerData, userId: user.id },
     });
+
     return { ...influencer, email: user.email, role: user.role };
   }
 
@@ -75,9 +71,9 @@ export class InfluencersRepository {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, onlyPublic: boolean = false) {
     return this.db.influencer.findUnique({
-      where: { userId: id, isPrivate: false }
+      where: { userId: id, ...(onlyPublic ? { isPrivate: false } : {}) }
     });
   }
 }

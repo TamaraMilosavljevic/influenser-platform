@@ -1,6 +1,6 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { CreateInfluencerDto } from "./create-influencer.dto";
-import { IsBoolean, IsInt, IsOptional, IsString, Min, IsArray} from "class-validator";
+import { IsBoolean, IsInt, IsOptional, IsString, Min, IsArray, IsEnum } from "class-validator";
 import { Value, Industry } from "generated/prisma/enums";
 export class UpdateInfluencerDto {
   @IsOptional()
@@ -13,12 +13,12 @@ export class UpdateInfluencerDto {
 
   @IsOptional()
   @IsArray()
-  @IsString({each: true})
+  @IsEnum(Value, {each: true})
   values: Value[]
 
   @IsOptional()
   @IsArray()
-  @IsString({each: true})
+  @IsEnum(Industry, {each: true})
   industries?: Industry[];
 }
 

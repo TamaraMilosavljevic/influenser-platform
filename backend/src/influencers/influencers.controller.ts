@@ -144,8 +144,8 @@ export class InfluencersController {
     },
   })
   @Get(":id")
-  findOne(@Param("id", ParseIntPipe) id: number) {
-    return this.influencersService.findOne(+id);
+  findOne(@Param("id", ParseIntPipe) id: number, @GetUser() user: JwtPayload) {
+    return this.influencersService.findOne(+id, user);
   }
 
   @Delete(":id")
