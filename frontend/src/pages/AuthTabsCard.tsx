@@ -5,31 +5,10 @@ import SignIn from "@/components/SignIn";
 import Register from "@/components/Register";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import type { User } from "@/auth/auth.types";
 
 const AuthTabsCard: React.FC = () => {
   const [tab, setTab] = useState<"signin" | "register">("signin");
   const navigate = useNavigate();
-
-  const handleLogin = async ({
-    fullname,
-    username,
-    email,
-  }: {
-    fullname?: string;
-    username?: string;
-    email?: string;
-  }) => {
-    const user: User = {
-      fullname: fullname || "User",
-      email: email || "user@local",
-      name: username || "username",
-      role: "INFLUENCER",
-    };
-
-
-    navigate({ to: "/influensers" });
-  };
 
   const handleGuest = async () => {
     navigate({ to: "/" });
@@ -109,7 +88,6 @@ const AuthTabsCard: React.FC = () => {
                   "
             >
               <SignIn
-                onLogin={handleLogin}
                 onGuest={handleGuest}
                 onSwitchToSignUp={() => setTab("register")}
               />

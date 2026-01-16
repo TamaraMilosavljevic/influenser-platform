@@ -11,7 +11,7 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@radix-ui/react-separator";
-import { useAccessToken, getActions } from "@/auth/authStore";
+import { getActions } from "@/auth/authStore";
 import type { SignInProps } from "./signin.types";
 import { useNavigate } from "@tanstack/react-router";
 import FormField from "./FormField";
@@ -35,10 +35,10 @@ const passwordSchema = z
   });
 
 const signInSchema = z.object({
-  username: z
-    .string()
-    .min(5, "Username must be at least 5 characters.")
-    .max(12, "Username title must be at most 32 characters."),
+  email: z
+      .email()
+      .min(5, "Email title must be at least 5 characters.")
+      .max(32, "Email title must be at most 32 characters."),
   password: passwordSchema,
   rememberMe: z.boolean(),
 });
@@ -82,9 +82,9 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, onGuest }) => {
       password: "",
       rememberMe: false,
     },
-    // validators: {
-    //   onSubmit: signInSchema,
-    // },
+    validators: {
+      onSubmit: signInSchema,
+    },
     onSubmit: handleSubmit,
   });
 

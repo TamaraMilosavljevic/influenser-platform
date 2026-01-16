@@ -47,7 +47,7 @@ export function BottomNav({
           variant="ghost"
           onClick={() => {
             clearTokens();
-            // navigate({ to: "/auth", replace: true });
+            navigate({ to: "/auth", replace: true });
           }}
           className={cn(
             "w-full rounded-none px-2",
