@@ -11,11 +11,11 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@radix-ui/react-separator";
-import type { User } from "@/auth/auth.types";
-import { useAuthStore } from "@/auth/authStore";
+import { useAccessToken, getActions } from "@/auth/authStore";
 import type { SignInProps } from "./signin.types";
 import { useNavigate } from "@tanstack/react-router";
 import FormField from "./FormField";
+import { loginApi, type LoginPayload } from "@/services/authApi";
 
 const passwordSchema = z
   .string()
@@ -43,61 +43,61 @@ const signInSchema = z.object({
   rememberMe: z.boolean(),
 });
 
+const { setAccessToken } = getActions();
+
 const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, onGuest }) => {
-  const login = useAuthStore((s) => s.login);
+
   const navigate = useNavigate();
 
   const handleSubmit = async ({
     value,
   }: {
     value: {
-      username: string;
+      email: string;
       password: string;
       rememberMe: boolean;
     };
   }) => {
-    const { username, password } = value;
 
-    const user: User = {
-      fullname: "User",
-      email: "user@local",
-      name: username || "username",
-      headline: "Login",
-      role: "INFLUENCER",
-      password,
+    const user: LoginPayload = {
+      email: value.email,
+      password: value.password
     };
 
-    login(user, "token");
+    console.log("Logging in user:", user);
+    var response = await loginApi(user);
 
-    localStorage.setItem(
-      "auth",
-      JSON.stringify({ isAuthenticated: true, user })
-    );
+    console.log("Before setting tokens, received response:", response);
+    setAccessToken(response.access_token);
+    console.log("After setting tokens, received response:", response);
+    console.log("User logged in, token set:", response.access_token);
+
     navigate({ to: "/profile" });
+    
   };
 
   const form = useForm({
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
       rememberMe: false,
     },
-    validators: {
-      onSubmit: signInSchema,
-    },
+    // validators: {
+    //   onSubmit: signInSchema,
+    // },
     onSubmit: handleSubmit,
   });
 
   const formFieldsArr: Array<{
-    name: "password" | "username";
+    name: "password" | "email";
     icon: string;
     placeholder: string;
     type: string;
   }> = [
     {
-      name: "username",
+      name: "email",
       icon: "alternate_email",
-      placeholder: "Broj telefona, e-mail ili korisnicko ime",
+      placeholder: "E-mail",
       type: "text",
     },
 
@@ -118,8 +118,7 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, onGuest }) => {
             id="sign-in-form"
             className="flex flex-col gap-4"
             onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
+              e.preventDefault()
               form.handleSubmit();
             }}
           >

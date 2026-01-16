@@ -1,16 +1,15 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { getAuthSnapshot } from "@/auth/authStore";
+import { getAccessToken } from "@/auth/authStore";
 
 export const Route = createFileRoute("/")({
   beforeLoad: () => {
-    const { isAuthenticated, user } = getAuthSnapshot();
+    var token = getAccessToken();
 
-    // If logged in "real user", send them to the private main page
-    if (isAuthenticated && user?.role === "INFLUENCER") {
-      throw redirect({ to: "/influensers" });
+    if (token !== undefined) {
+      throw redirect({ to: "/profile" });
+    } else {
+      throw redirect({ to: "/auth" });
     }
-    // Otherwise redirect to auth page
-    throw redirect({ to: "/auth" });
   }
 });
 

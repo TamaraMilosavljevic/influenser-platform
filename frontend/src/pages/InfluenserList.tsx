@@ -1,49 +1,36 @@
-import InfluenserItem from "@/components/InfluenserItem";
+import InfluencerCard from "@/components/InfluencerCard";
+import SearchComponent from "@/components/SearchComponent";
 
-interface InfluencerListProps {
-  mode: "guest" | "authed";
-}
 
-const InfluenserList = ({ mode }: InfluencerListProps) => {
-  const influencers = [
-    {
-      id: 1,
-      name: "Alex Johnson",
-      headline: "Tech Influencer",
-    },
-    {
-      id: 2,
-      name: "Sarah Williams",
-      headline: "Fashion & Lifestyle",
-    },
-    {
-      id: 3,
-      name: "Mike Chen",
-      headline: "Travel & Adventure",
-    },
-    {
-      id: 4,
-      name: "Emma Davis",
-      headline: "Fitness Coach",
-    },
-  ];
+export default function InfluenserList() {
+return (
 
-  return (
-    <div style={{ padding: "20px" }}>
-      <h1>Influencers {mode === "authed" && "(Authenticated)"}</h1>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-          gap: "20px",
-        }}
-      >
-        {influencers.map((influencer) => (
-          <InfluenserItem key={influencer.id} influenser={influencer} />
+
+    <div className="space-y-6">
+    
+        <p className="pl-3"></p>
+            <h1 className="text-4xl font-bold pl-4">Pronađite influensere za saradnju</h1>
+        
+        <SearchComponent />
+    
+        <div
+            className="
+                grid
+                grid-cols-[repeat(auto-fit,minmax(350px,1fr))]
+                gap-6
+                justify-items-center
+                mx-auto
+                w-full
+                max-w-7xl
+                bg-backgroud
+            "
+        >
+        {Array.from({ length: 18 }).map((_, index) => (
+            <InfluencerCard key={index} />
         ))}
-      </div>
-    </div>
-  );
-};
+        </div>
 
-export default InfluenserList;
+    </div>
+    
+)
+}

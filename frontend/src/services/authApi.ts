@@ -9,10 +9,12 @@ export type RegisterPayload = {
   role: string;
 };
 
+const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 export async function loginApi(
   payload: LoginPayload
-): Promise<{ user: User; token: string }> {
-  const res = await fetch("/api/login", {
+): Promise<{ access_token: string }> {
+  const res = await fetch(`${apiUrl}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -25,7 +27,6 @@ export async function loginApi(
 export async function registerApi(
   payload: RegisterPayload
 ): Promise<{ user: User; token: string }> {
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const res = await fetch(`${apiUrl}/influencers`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

@@ -11,8 +11,6 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import FormField from "./FormField";
-import { useAuthStore } from "@/auth/authStore";
-import RegSuccessScreen from "./RegSuccess";
 import { registerApi } from "@/services/authApi";
 import type { RegisterPayload } from "@/services/authApi";
 
@@ -72,7 +70,6 @@ const Register = ({
 }: { 
   onSwitchToSignIn: () => void;
 }) => {
-  const { isRegistered, setIsRegistered } = useAuthStore();
   const form = useForm({
     defaultValues: {
       fullname: "",
@@ -97,7 +94,6 @@ const Register = ({
 
       console.log("Registering user:", user);
       registerApi(user);
-      setIsRegistered(true);
     },
   });
 
@@ -141,9 +137,6 @@ const Register = ({
 
   return (
     <div className="w-full flex flex-col justify-start items-center">
-      {isRegistered ? (
-        <RegSuccessScreen onSwitchToSignIn={onSwitchToSignIn} />
-      ) : (
         <Card className="w-full">
           <CardHeader></CardHeader>
           <CardContent className="w-100%">
@@ -234,7 +227,6 @@ const Register = ({
             </div>
           </CardFooter>
         </Card>
-      )}
     </div>
   );
 };

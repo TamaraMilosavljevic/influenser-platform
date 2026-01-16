@@ -4,8 +4,10 @@ import { GoogleFontIcon } from "@/assets/icons/GoogleFontIcon";
 
 import type { BottomNavProps } from "./bottomNav.types";
 import { BottomNavItem } from "./BottomNavItem";
-import { useAuthStore } from "@/auth/authStore";
+import { getActions } from "@/auth/authStore";
 import { useNavigate } from "@tanstack/react-router";
+
+const { clearTokens } = getActions();
 
 export function BottomNav({
   items,
@@ -13,7 +15,7 @@ export function BottomNav({
   maxWidthClassName = "max-w-screen-md",
   heightPx = 60,
 }: BottomNavProps) {
-  const logoutUser = useAuthStore((s) => s.logout);
+
   const navigate = useNavigate();
 
   return (
@@ -44,8 +46,8 @@ export function BottomNav({
           type="button"
           variant="ghost"
           onClick={() => {
-            logoutUser();
-            navigate({ to: "/auth", replace: true });
+            clearTokens();
+            // navigate({ to: "/auth", replace: true });
           }}
           className={cn(
             "w-full rounded-none px-2",

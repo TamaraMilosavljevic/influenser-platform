@@ -5,15 +5,11 @@ import SignIn from "@/components/SignIn";
 import Register from "@/components/Register";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useAuthStore } from "@/auth/authStore";
 import type { User } from "@/auth/auth.types";
 
 const AuthTabsCard: React.FC = () => {
   const [tab, setTab] = useState<"signin" | "register">("signin");
   const navigate = useNavigate();
-
-  const login = useAuthStore((s) => s.login);
-  const loginAsGuest = useAuthStore((s) => s.loginAsGuest);
 
   const handleLogin = async ({
     fullname,
@@ -31,16 +27,11 @@ const AuthTabsCard: React.FC = () => {
       role: "INFLUENCER",
     };
 
-    login(user, "token");
-    localStorage.setItem(
-      "auth",
-      JSON.stringify({ isAuthenticated: true, user })
-    );
+
     navigate({ to: "/influensers" });
   };
 
   const handleGuest = async () => {
-    loginAsGuest();
     navigate({ to: "/" });
   };
 

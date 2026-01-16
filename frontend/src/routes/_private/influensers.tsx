@@ -9,7 +9,7 @@ function InfluencersAuthedRoute() {
   return (
     <div>
       <header>Signed-in header / extra actions</header>
-      <InfluenserList mode="authed" />
+      <InfluenserList />
     </div>
   );
 }
