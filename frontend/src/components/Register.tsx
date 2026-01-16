@@ -11,10 +11,10 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import FormField from "./FormField";
-import { registerApi } from "@/services/authApi";
-import type { RegisterPayload } from "@/services/authApi";
+import { registerApi } from "@/services/authService";
 import RegSuccessScreen from "./RegSuccess";
 import { getActions, useIsRegistered } from "@/auth/authStore";
+import type { RegisterPayload } from "@/types/auth.types";
 
 const { setIsRegistered } = getActions();
 
@@ -85,9 +85,9 @@ const Register = ({
       termsAccepted: false,
     },
 
-    validators: {
-      onSubmit: combinedSchema,
-    },
+    // validators: {
+    //   onSubmit: combinedSchema,
+    // },
     onSubmit: async ({ value }) => {
       const user: RegisterPayload = {
         email: value.email,

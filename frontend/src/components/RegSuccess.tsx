@@ -1,6 +1,9 @@
 import { GoogleFontIcon } from "@/assets/icons/GoogleFontIcon";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { getActions } from "@/auth/authStore";
+
+const { setIsUnregistered } = getActions();
 
 const RegSuccessScreen = ({
   onSwitchToSignIn,
@@ -24,7 +27,11 @@ const RegSuccessScreen = ({
           <div className="w-full flex flex-row flex-1 gap-8 justify-center items-center">
             <Button
               type="button"
-              onClick={onSwitchToSignIn}
+              onClick={() => {
+                  onSwitchToSignIn();
+                  setIsUnregistered();
+                }
+              }
               className="outline-none w-full"
               size="lg"
             >

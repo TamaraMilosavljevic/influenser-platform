@@ -15,7 +15,8 @@ import { getActions } from "@/auth/authStore";
 import type { SignInProps } from "./signin.types";
 import { useNavigate } from "@tanstack/react-router";
 import FormField from "./FormField";
-import { loginApi, type LoginPayload } from "@/services/authApi";
+import { loginApi } from "@/services/authService";
+import type { LoginPayload } from "@/types/auth.types";
 
 const passwordSchema = z
   .string()
@@ -82,9 +83,9 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, onGuest }) => {
       password: "",
       rememberMe: false,
     },
-    validators: {
-      onSubmit: signInSchema,
-    },
+    // validators: {
+    //   onSubmit: signInSchema,
+    // },
     onSubmit: handleSubmit,
   });
 

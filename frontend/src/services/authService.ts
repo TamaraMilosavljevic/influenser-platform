@@ -1,13 +1,5 @@
-// src/services/authApi.ts
-import type { User } from "../auth/auth.types";
+import type { LoginPayload, RegisterPayload } from "@/types/auth.types";
 
-export type LoginPayload = { email: string; password: string };
-export type RegisterPayload = {
-  email: string;
-  password: string;
-  name: string;
-  role: string;
-};
 
 const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -26,7 +18,7 @@ export async function loginApi(
 
 export async function registerApi(
   payload: RegisterPayload
-): Promise<{ user: User; token: string }> {
+): Promise<any> {
   const res = await fetch(`${apiUrl}/influencers`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
