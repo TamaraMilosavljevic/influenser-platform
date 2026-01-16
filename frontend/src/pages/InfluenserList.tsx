@@ -1,8 +1,11 @@
 import InfluencerCard from "@/components/InfluencerCard";
 import SearchComponent from "@/components/SearchComponent";
+import { getAllInfluencers } from "@/services/influencerService";
 
+export default async function InfluenserList() {
 
-export default function InfluenserList() {
+    var influencers = await getAllInfluencers();
+
 return (
 
 
@@ -25,9 +28,14 @@ return (
                 bg-backgroud
             "
         >
-        {Array.from({ length: 18 }).map((_, index) => (
-            <InfluencerCard key={index} />
-        ))}
+
+        {/* {influencers.map((influencer: any) => (
+        <InfluencerCard
+            key={influencer.id}
+            influencer={influencer}
+        />
+        ))} */}
+
         </div>
 
     </div>

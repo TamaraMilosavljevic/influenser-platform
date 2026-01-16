@@ -26,6 +26,25 @@ export class InfluencersRepository {
     return { ...influencer, email: user.email, role: user.role };
   }
 
+  async getAll() {
+    const influencers = await this.db.influencer.findMany({
+      include: {
+        user: {
+          select: {
+            email: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    return influencers.map((i) => ({
+      ...i,
+      email: i.user.email,
+      role: i.user.role,
+    }));
+  }
+
   async update(id: number, data: UpdateInfluencer) {
     return this.db.influencer.update({
       where: {
