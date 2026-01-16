@@ -85,9 +85,9 @@ const Register = ({
       termsAccepted: false,
     },
 
-    // validators: {
-    //   onSubmit: combinedSchema,
-    // },
+    validators: {
+      onSubmit: combinedSchema,
+    },
     onSubmit: async ({ value }) => {
       const user: RegisterPayload = {
         email: value.email,

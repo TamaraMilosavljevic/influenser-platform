@@ -83,9 +83,9 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, onGuest }) => {
       password: "",
       rememberMe: false,
     },
-    // validators: {
-    //   onSubmit: signInSchema,
-    // },
+    validators: {
+      onSubmit: signInSchema,
+    },
     onSubmit: handleSubmit,
   });
 
