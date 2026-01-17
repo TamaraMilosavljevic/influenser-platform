@@ -1,10 +1,8 @@
-// import InfluencerCard from "@/components/InfluencerCard";
+import InfluencerCard from "@/components/InfluencerCard";
 import SearchComponent from "@/components/SearchComponent";
-// import { getAllInfluencers } from "@/services/influencerService";
+import type { Influencer } from "@/types/influencer.types";
 
-export default async function InfluenserList() {
-
-    // var influencers = await getAllInfluencers();
+export default function InfluenserList({ influencers }: { influencers: Influencer[] }) {
 
 return (
 
@@ -28,13 +26,13 @@ return (
                 bg-backgroud
             "
         >
-
-        {/* {influencers.map((influencer: any) => (
-        <InfluencerCard
-            key={influencer.id}
+            
+        {influencers.map((influencer) => (
+            <InfluencerCard
+            key={influencer.userId}
             influencer={influencer}
-        />
-        ))} */}
+            />
+        ))}
 
         </div>
 
