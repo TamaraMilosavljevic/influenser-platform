@@ -88,7 +88,7 @@ model User {
 
 model Influencer {
   userId         Int  @id
-  user           User    @relation(fields: [userId], references: [id])
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   name           String
   headline       String?
   experience     Int?
@@ -102,7 +102,7 @@ model Influencer {
 model Post {
   id          Int   @id @default(autoincrement())
   userId      Int 
-  user        Influencer    @relation(fields: [userId], references: [userId])
+  user        Influencer    @relation(fields: [userId], references: [userId], onDelete: Cascade)
   text        String?
   images      String[]
   createdAt   DateTime
@@ -110,6 +110,6 @@ model Post {
 }
 model Business {
   userId         Int  @id
-  business       User @relation(fields: [userId], references: [id])
+  business       User @relation(fields: [userId], references: [id], onDelete: Cascade)
   name           String
 }

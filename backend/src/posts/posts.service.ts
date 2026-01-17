@@ -13,7 +13,7 @@ export class PostsService {
     private readonly postRepository: PostRepository,
   ) {}
   async create(userId: number, createPostDto: CreatePostDto, files: Express.Multer.File[]) {
-    if (!createPostDto.text && (!files || files?.length === 0)) {
+    if (!createPostDto.text?.trim() && (!files || files?.length === 0)) {
       throw new BadRequestException("Post must have text or images");
     }
     let imageUrls: { dbUrl: string; signedUrl: string }[] = [];
