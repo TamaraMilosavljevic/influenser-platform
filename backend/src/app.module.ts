@@ -10,6 +10,7 @@ import { JwtAuthGuard } from "./auth/auth.guard";
 import { RolesGuard } from "./auth/roles.guard";
 import { ConfigModule } from "@nestjs/config";
 import { BusinessesModule } from './businesses/businesses.module';
+import { DataModule } from "./data/data.module";
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { BusinessesModule } from './businesses/businesses.module';
     AuthModule,
     DataAccessModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    BusinessesModule
+    BusinessesModule,
+    DataModule
   ],
   controllers: [],
   providers: [

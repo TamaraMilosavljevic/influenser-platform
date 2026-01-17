@@ -1,5 +1,5 @@
 import { getAccessToken } from "@/auth/authStore";
-import type { Influencer } from "@/types/influencer.types";
+import type { Influencer, SearchQueryParams } from "@/types/influencer.types";
 
 const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -9,9 +9,17 @@ function authHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-export async function getAllInfluencers(): Promise<Influencer[]> {
+export async function getAllInfluencers(params?: SearchQueryParams): Promise<Influencer[]> {
 
-    const res = await fetch(`${apiUrl}/influencers`, {
+    const qs = new URLSearchParams();
+
+    if (params?.name) qs.set("name", params.name);
+    if (params?.value != null && params.value !== undefined) qs.set("value", String(params.value));
+    if (params?.industry != null && params.industry !== undefined) qs.set("industry", String(params.industry));
+
+    const url = `${apiUrl}/influencers${qs.toString() ? `?${qs.toString()}` : ""}`;
+
+    const res = await fetch(url, {
         method: "GET",
         headers: { 
             "Content-Type": "application/json",
