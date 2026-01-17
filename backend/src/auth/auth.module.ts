@@ -22,11 +22,7 @@ import { APP_GUARD } from "@nestjs/core";
   providers: [
     AuthService, 
     PasswordService, 
-    JwtStrategy,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+    JwtStrategy
   ],
   exports: [AuthService, PasswordService],
 })

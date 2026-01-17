@@ -78,7 +78,7 @@ export class InfluencersController {
   @HttpCode(HttpStatus.OK)
   publish(
     @GetUser() user: JwtPayload,
-    @Query("isPrivate", ParseBoolPipe) isPrivate: boolean
+    @Body("isPrivate") isPrivate: boolean
   ) {
     return this.influencersService.setIsPrivate(user.id, isPrivate);
   }

@@ -92,7 +92,7 @@ export class InfluencersRepository {
 
   async findOne(id: number, onlyPublic: boolean = false) {
     return this.db.influencer.findUnique({
-      where: { userId: id, ...(onlyPublic ? { isPrivate: false } : {}) }
+      where: { userId: id }
     });
   }
 }
