@@ -21,26 +21,26 @@ import { useState } from "react";
 
 const passwordSchema = z
   .string()
-  .min(8, { message: "Password must be at least 8 characters long." })
-  .max(32, { message: "Password must be a maximum of 32 characters long." })
+  .min(8, { message: "Lozinka mora imati najmanje 8 karaktera." })
+  .max(32, { message: "Lozinka može imati najviše 32 karaktera." })
   .refine((password) => /[A-Z]/.test(password), {
-    message: "Password must contain at least one uppercase letter.",
+    message: "Lozinka mora sadržati bar jedno veliko slovo.",
   })
   .refine((password) => /[a-z]/.test(password), {
-    message: "Password must contain at least one lowercase letter.",
+    message: "Lozinka mora sadržati bar jedno malo slovo.",
   })
   .refine((password) => /[0-9]/.test(password), {
-    message: "Password must contain at least one number.",
+    message: "Lozinka mora sadržati bar jedan broj.",
   })
   .refine((password) => /[!@#$%^&*()_+={}[\]|:;"'<>,.?/-]/.test(password), {
-    message: "Password must contain at least one special character.",
+    message: "Lozinka mora sadržati bar jedan specijalni karakter.",
   });
 
 const signInSchema = z.object({
   email: z
-      .email()
-      .min(5, "Email title must be at least 5 characters.")
-      .max(32, "Email title must be at most 32 characters."),
+    .email({ message: "Unesite ispravnu e-mail adresu." })
+    .min(5, "E-mail adresa mora imati najmanje 5 karaktera.")
+    .max(32, "E-mail adresa može imati najviše 32 karaktera."),
   password: passwordSchema,
   rememberMe: z.boolean(),
 });
