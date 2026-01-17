@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@radix-ui/react-separator";
 import { getActions } from "@/auth/authStore";
-import type { SignInProps } from "./signin.types";
+import type { SignInProps } from "../types/signin.types";
 import { useNavigate } from "@tanstack/react-router";
 import FormField from "./FormField";
 import { loginApi } from "@/services/authService";

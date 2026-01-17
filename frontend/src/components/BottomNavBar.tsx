@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { GoogleFontIcon } from "@/assets/icons/GoogleFontIcon";
 
-import type { BottomNavProps } from "./bottomNav.types";
+import type { BottomNavProps } from "../types/bottomNav.types";
 import { BottomNavItem } from "./BottomNavItem";
 import { getActions } from "@/auth/authStore";
 import { useNavigate } from "@tanstack/react-router";

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GoogleFontIcon } from "@/assets/icons/GoogleFontIcon";
-import type { BottomNavItem as Item } from "./bottomNav.types";
+import type { BottomNavItem as Item } from "../types/bottomNav.types";
 
 type Props = {
   item: Item;

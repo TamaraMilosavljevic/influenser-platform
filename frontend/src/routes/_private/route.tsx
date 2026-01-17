@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { authStore } from "@/auth/authStore";
 import { BottomNav } from "@/components/BottomNavBar";
-import type { BottomNavItem } from "@/components/bottomNav.types";
+import type { BottomNavItem } from "@/types/bottomNav.types";
 
 export const Route = createFileRoute("/_private")({
   beforeLoad: () => {
