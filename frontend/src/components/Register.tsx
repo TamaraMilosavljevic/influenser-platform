@@ -11,24 +11,28 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import FormField from "./FormField";
-import { useAuthStore } from "@/auth/authStore";
+import { registerApi } from "@/services/authService";
 import RegSuccessScreen from "./RegSuccess";
+import { getActions, useIsRegistered } from "@/auth/authStore";
+import type { RegisterPayload } from "@/types/auth.types";
+
+const { setIsRegistered } = getActions();
 
 const passwordSchema = z
   .string()
-  .min(8, { message: "Password must be at least 8 characters long." })
-  .max(32, { message: "Password must be a maximum of 32 characters long." })
+  .min(8, { message: "Lozinka mora imati najmanje 8 karaktera." })
+  .max(32, { message: "Lozinka može imati najviše 32 karaktera." })
   .refine((password) => /[A-Z]/.test(password), {
-    message: "Password must contain at least one uppercase letter.",
+    message: "Lozinka mora sadržati bar jedno veliko slovo.",
   })
   .refine((password) => /[a-z]/.test(password), {
-    message: "Password must contain at least one lowercase letter.",
+    message: "Lozinka mora sadržati bar jedno malo slovo.",
   })
   .refine((password) => /[0-9]/.test(password), {
-    message: "Password must contain at least one number.",
+    message: "Lozinka mora sadržati bar jedan broj.",
   })
   .refine((password) => /[!@#$%^&*()_+={}[\]|:;"'<>,.?/-]/.test(password), {
-    message: "Password must contain at least one special character.",
+    message: "Lozinka mora sadržati bar jedan specijalni karakter.",
   });
 
 const passwordConfirmationSchema = z
@@ -37,36 +41,39 @@ const passwordConfirmationSchema = z
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match.",
+    message: "Lozinke se ne poklapaju.",
     path: ["confirmPassword"],
   });
 
 const formSchema = z.object({
   username: z
     .string()
-    .min(5, "Username must be at least 5 characters.")
-    .max(12, "Username title must be at most 32 characters."),
+    .min(5, "Korisničko ime mora imati najmanje 5 karaktera.")
+    .max(12, "Korisničko ime može imati najviše 12 karaktera."),
   fullname: z
     .string()
-    .min(5, "Fullname must be at least 20 characters.")
-    .max(100, "Fullname must be at most 100 characters.")
-    .includes(" "),
+    .min(5, "Ime i prezime mora imati najmanje 5 karaktera.")
+    .max(100, "Ime i prezime može imati najviše 100 karaktera.")
+    .includes(" ", { message: "Unesite ime i prezime (sa razmakom)." }),
   email: z
-    .email()
-    .min(5, "Email title must be at least 5 characters.")
-    .max(32, "Email title must be at most 32 characters."),
+    .email({ message: "Unesite ispravnu e-mail adresu." })
+    .min(5, "E-mail adresa mora imati najmanje 5 karaktera.")
+    .max(32, "E-mail adresa može imati najviše 32 karaktera."),
   termsAccepted: z.boolean().refine((val) => val === true, {
-    message: "You must accept the terms and conditions",
+    message: "Morate prihvatiti uslove korišćenja.",
   }),
   rememberMe: z.boolean().refine((val) => val === true, {
-    message: "Remember your password",
+    message: "Morate potvrditi da želite da zapamtite lozinku.",
   }),
 });
 
 const combinedSchema = formSchema.merge(passwordConfirmationSchema);
 
-const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
-  const { isRegistered, setIsRegistered } = useAuthStore();
+const Register = ({ 
+  onSwitchToSignIn
+}: { 
+  onSwitchToSignIn: () => void;
+}) => {
   const form = useForm({
     defaultValues: {
       fullname: "",
@@ -81,8 +88,18 @@ const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
     validators: {
       onSubmit: combinedSchema,
     },
-    onSubmit: async () => {
-      setIsRegistered(true);
+    onSubmit: async ({ value }) => {
+      const user: RegisterPayload = {
+        email: value.email,
+        name: value.fullname,
+        password: value.password,
+        role: "INFLUENCER"
+      };
+
+      console.log("Registering user:", user);
+      registerApi(user);
+
+      setIsRegistered()
     },
   });
 
@@ -123,6 +140,8 @@ const Register = ({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) => {
       type: "password",
     },
   ];
+
+  const isRegistered = useIsRegistered();
 
   return (
     <div className="w-full flex flex-col justify-start items-center">

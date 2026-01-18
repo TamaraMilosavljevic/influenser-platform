@@ -5,42 +5,12 @@ import SignIn from "@/components/SignIn";
 import Register from "@/components/Register";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useAuthStore } from "@/auth/authStore";
-import type { User } from "@/auth/auth.types";
 
 const AuthTabsCard: React.FC = () => {
   const [tab, setTab] = useState<"signin" | "register">("signin");
   const navigate = useNavigate();
 
-  const login = useAuthStore((s) => s.login);
-  const loginAsGuest = useAuthStore((s) => s.loginAsGuest);
-
-  const handleLogin = async ({
-    fullname,
-    username,
-    email,
-  }: {
-    fullname?: string;
-    username?: string;
-    email?: string;
-  }) => {
-    const user: User = {
-      fullname: fullname || "User",
-      email: email || "user@local",
-      username: username || "username",
-      role: "user",
-    };
-
-    login(user, "token");
-    localStorage.setItem(
-      "auth",
-      JSON.stringify({ isAuthenticated: true, user })
-    );
-    navigate({ to: "/influensers" });
-  };
-
   const handleGuest = async () => {
-    loginAsGuest();
     navigate({ to: "/" });
   };
 
@@ -118,7 +88,6 @@ const AuthTabsCard: React.FC = () => {
                   "
             >
               <SignIn
-                onLogin={handleLogin}
                 onGuest={handleGuest}
                 onSwitchToSignUp={() => setTab("register")}
               />
@@ -136,7 +105,9 @@ const AuthTabsCard: React.FC = () => {
                     transition-all duration-200
                   "
             >
-              <Register onSwitchToSignIn={() => setTab("signin")} />
+              <Register 
+                onSwitchToSignIn={() => setTab("signin")}
+              />
             </TabsContent>
           </div>
         </Tabs>

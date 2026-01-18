@@ -11,74 +11,83 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@radix-ui/react-separator";
-import type { User } from "@/auth/auth.types";
-import { useAuthStore } from "@/auth/authStore";
-import type { SignInProps } from "./signin.types";
+import { getActions } from "@/auth/authStore";
+import type { SignInProps } from "../types/signin.types";
 import { useNavigate } from "@tanstack/react-router";
 import FormField from "./FormField";
+import { loginApi } from "@/services/authService";
+import type { LoginPayload } from "@/types/auth.types";
+import { useState } from "react";
 
 const passwordSchema = z
   .string()
-  .min(8, { message: "Password must be at least 8 characters long." })
-  .max(32, { message: "Password must be a maximum of 32 characters long." })
+  .min(8, { message: "Lozinka mora imati najmanje 8 karaktera." })
+  .max(32, { message: "Lozinka može imati najviše 32 karaktera." })
   .refine((password) => /[A-Z]/.test(password), {
-    message: "Password must contain at least one uppercase letter.",
+    message: "Lozinka mora sadržati bar jedno veliko slovo.",
   })
   .refine((password) => /[a-z]/.test(password), {
-    message: "Password must contain at least one lowercase letter.",
+    message: "Lozinka mora sadržati bar jedno malo slovo.",
   })
   .refine((password) => /[0-9]/.test(password), {
-    message: "Password must contain at least one number.",
+    message: "Lozinka mora sadržati bar jedan broj.",
   })
   .refine((password) => /[!@#$%^&*()_+={}[\]|:;"'<>,.?/-]/.test(password), {
-    message: "Password must contain at least one special character.",
+    message: "Lozinka mora sadržati bar jedan specijalni karakter.",
   });
 
 const signInSchema = z.object({
-  username: z
-    .string()
-    .min(5, "Username must be at least 5 characters.")
-    .max(12, "Username title must be at most 32 characters."),
+  email: z
+    .email({ message: "Unesite ispravnu e-mail adresu." })
+    .min(5, "E-mail adresa mora imati najmanje 5 karaktera.")
+    .max(32, "E-mail adresa može imati najviše 32 karaktera."),
   password: passwordSchema,
   rememberMe: z.boolean(),
 });
 
+const { setAccessToken } = getActions();
+
 const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, onGuest }) => {
-  const login = useAuthStore((s) => s.login);
+
+  const [authError, setAuthError] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   const handleSubmit = async ({
     value,
   }: {
     value: {
-      username: string;
+      email: string;
       password: string;
       rememberMe: boolean;
     };
   }) => {
-    const { username, password } = value;
+    setAuthError(null);
 
-    const user: User = {
-      fullname: "User",
-      email: "user@local",
-      username: username || "username",
-      headline: "Login",
-      role: "user",
-      password,
-    };
+    try {
+      const user: LoginPayload = {
+        email: value.email,
+        password: value.password,
+      };
 
-    login(user, "token");
+      const response = await loginApi(user);
 
-    localStorage.setItem(
-      "auth",
-      JSON.stringify({ isAuthenticated: true, user })
-    );
-    navigate({ to: "/profile" });
+      setAccessToken(response.access_token);
+      navigate({ to: "/profile" });
+    } catch (err: any) {
+      const status = err?.status;
+    
+      if (status === 401 || status === 403) {
+        setAuthError("Pogrešan e-mail ili lozinka.");
+      } else {
+        setAuthError("Došlo je do greške. Pokušajte ponovo.");
+      }
+    }
   };
 
   const form = useForm({
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
       rememberMe: false,
     },
@@ -89,15 +98,15 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, onGuest }) => {
   });
 
   const formFieldsArr: Array<{
-    name: "password" | "username";
+    name: "password" | "email";
     icon: string;
     placeholder: string;
     type: string;
   }> = [
     {
-      name: "username",
+      name: "email",
       icon: "alternate_email",
-      placeholder: "Broj telefona, e-mail ili korisnicko ime",
+      placeholder: "E-mail",
       type: "text",
     },
 
@@ -118,8 +127,7 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, onGuest }) => {
             id="sign-in-form"
             className="flex flex-col gap-4"
             onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
+              e.preventDefault()
               form.handleSubmit();
             }}
           >
@@ -146,6 +154,11 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, onGuest }) => {
                 />
               ))}
             </FieldGroup>
+            {authError && (
+              <Label className="block rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                {authError}
+              </Label>
+              )}
             <FieldGroup className="flex flex-col md:flex-row justify-between items-baseline py-5">
               <form.Field name="rememberMe">
                 {(field) => (

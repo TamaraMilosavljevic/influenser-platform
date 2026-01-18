@@ -1,101 +1,120 @@
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import type { User, AuthState } from "./auth.types";
+import { createStore } from 'zustand/vanilla';
+import { devtools } from 'zustand/middleware';
+import { z } from "zod";
+import { jwtDecode } from 'jwt-decode';
+import { CookieService } from '../services/cookieService';
+import { useStoreWithEqualityFn } from "zustand/traditional";
 
-const useAuthStore = create<AuthState>()(
-  persist(
-    (set, get) => ({
-      user: null,
-      token: null,
+const ACCESS_TOKEN_KEY = 'accessToken';
 
-      isAuthenticated: false,
-      isLoading: true,
-      isRegistered: false,
+const TokenDataSchema = z.object({
+	email: z.string(),
+	role: z.string(),
+  sub: z.number(),
+})
 
-      hasHydrated: false,
-      setHasHydrated: (v) => set({ hasHydrated: v }),
+type TokenData = z.infer<typeof TokenDataSchema>;
 
-      setIsAuthenticated: (v: boolean) => set({ isAuthenticated: v }),
+type AuthStore = {
+  accessToken: string | undefined;
+  accessTokenData: TokenData | undefined;
+  isRegistered: boolean;
 
-      setToken: (token: string | null) =>
-        set({
-          token,
-          isAuthenticated: Boolean(token),
-        }),
+  actions: {
+		setAccessToken: (accessToken: string | undefined) => void;
+		setIsRegistered: () => void;
+    setIsUnregistered: () => void;
+		init: () => void;
+		clearTokens: () => void;
+	}
+};
 
-      getToken: () => get().token,
+export const decodeAccessToken = (accessToken: string) => TokenDataSchema.parse(jwtDecode<TokenData>(accessToken));
 
-      setIsLoading: (isLoading: boolean) => set({ isLoading }),
-      setIsRegistered: (isRegistered: boolean) => set({ isRegistered }),
+export const authStore = createStore<AuthStore>()(
+  devtools(
+      (set, get) => ({
+        accessToken: undefined,
+        accessTokenData: undefined,
+        isRegistered: false,
 
-      setUser: (user: User | null) => set({ user }),
+        actions: {
+          setAccessToken: (accessToken: string | undefined) => {
+            
+            if (accessToken) {
+              CookieService.set(ACCESS_TOKEN_KEY, accessToken);
+            }
 
-      login: (user: User, token: string) =>
-        set({
-          user,
-          token,
-          isAuthenticated: true,
-          isLoading: false,
-          isRegistered: true,
-        }),
+            const accessTokenData = (() => {
+              try {
+                return accessToken ? decodeAccessToken(accessToken) : undefined;
+              } catch (error) {
+                console.error(error)
+                return undefined;
+              }
+            })();
 
-      logout: () => {
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-          isLoading: false,
-          isRegistered: false,
-        });
-      },
-
-      loginAsGuest: () =>
-        set({
-          user: {
-            fullname: "Guest",
-            email: "guest@local",
-            username: "guest",
-            headline: "Browsing as guest",
-            role: "guest",
+            set({ accessToken, accessTokenData });
           },
-          token: "guest-token",
-          isAuthenticated: true,
-          isLoading: false,
-        }),
+
+          setIsRegistered: () => {
+            set({ isRegistered : true });
+          },
+
+          setIsUnregistered: () => {
+            set({ isRegistered : false });
+          },
+
+          init: () => {
+            const {setAccessToken} = get().actions;
+            setAccessToken(CookieService.get(ACCESS_TOKEN_KEY));
+          },
+
+          clearTokens: () => {
+            CookieService.remove(ACCESS_TOKEN_KEY);
+
+            console.log("Clearing tokens from auth store");
+            set({
+              accessToken: undefined,
+              accessTokenData: undefined,
+            });
+          }
+        }
     }),
     {
-      name: "auth-storage",
-      storage: createJSONStorage(() => localStorage),
-
-      partialize: (state) => ({
-        user: state.user,
-        token: state.token,
-      }),
-
-      onRehydrateStorage: () => (state, error) => {
-        if (error) {
-          state?.setIsLoading(false);
-          state?.setHasHydrated(true);
-          state?.setIsRegistered(false);
-          return;
-        }
-
-        // IMPORTANT: recompute derived fields from persisted data
-        const token = state?.token ?? null;
-        state?.setToken(token); // sets isAuthenticated based on token
-
-        state?.setIsLoading(false);
-        state?.setHasHydrated(true);
-      },
+      name: 'auth-store',
+      enabled: !import.meta.env.PROD
     }
   )
 );
 
-export { useAuthStore, type User, type AuthState };
+export type ExtractState<S> = S extends {
+		getState: () => infer T;
+	}
+	? T
+	: never;
 
-export const getAuthSnapshot = () => {
-  const { user, token, isAuthenticated, hasHydrated, isLoading } =
-    useAuthStore.getState();
+// Selectors
+const accessTokenSelector = (state: ExtractState<typeof authStore>) => state.accessToken;
+const accessTokenDataSelector = (state: ExtractState<typeof authStore>) => state.accessTokenData;
+const actionsSelector = (state: ExtractState<typeof authStore>) => state.actions;
+const isRegisteredSelector = (state: ExtractState<typeof authStore>) => state.isRegistered;
 
-  return { user, token, isAuthenticated, hasHydrated, isLoading };
-};
+// getters
+export const getAccessToken = () => accessTokenSelector(authStore.getState());
+export const getAccessTokenData = () => accessTokenDataSelector(authStore.getState());
+export const getActions = () => actionsSelector(authStore.getState());
+export const getIsRegistered = () => isRegisteredSelector(authStore.getState());
+
+export function useAuthStore<U>(
+  selector: (s: ExtractState<typeof authStore>) => U,
+  equalityFn?: (a: U, b: U) => boolean
+) {
+  return useStoreWithEqualityFn(authStore, selector, equalityFn);
+}
+
+// Hooks
+export const useAccessToken = () => useAuthStore(accessTokenSelector);
+export const useAccessTokenData = () => useAuthStore(accessTokenDataSelector);
+export const useActions = () => useAuthStore(actionsSelector);
+export const useIsRegistered = () => useAuthStore(isRegisteredSelector);

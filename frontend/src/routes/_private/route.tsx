@@ -1,27 +1,14 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { getAuthSnapshot, useAuthStore } from "@/auth/authStore";
-import { hydrateAuthFromStorage } from "@/services/rehydrate";
+import { authStore } from "@/auth/authStore";
 import { BottomNav } from "@/components/BottomNavBar";
-import type { BottomNavItem } from "@/components/bottomNav.types";
+import type { BottomNavItem } from "@/types/bottomNav.types";
 
 export const Route = createFileRoute("/_private")({
   beforeLoad: () => {
-    const { isAuthenticated } = getAuthSnapshot();
-    console.log("PRIVATE beforeLoad snapshot:", isAuthenticated);
 
-    const { hasHydrated } = useAuthStore.getState();
-    if (!hasHydrated) {
-      console.log("Auth store has not hydrated yet.");
-    } else {
-      hydrateAuthFromStorage();
-      console.log("Hydrated auth store from storage.");
-    }
+    const { accessToken, accessTokenData } = authStore.getState();
 
-    if (
-      !isAuthenticated ||
-      (isAuthenticated && getAuthSnapshot().user?.role === "guest")
-    ) {
-      console.log(isAuthenticated, hasHydrated, "current state");
+    if (!accessToken || (accessToken && accessTokenData?.role === "GUEST")) {  
       throw redirect({ to: "/auth" });
     }
   },

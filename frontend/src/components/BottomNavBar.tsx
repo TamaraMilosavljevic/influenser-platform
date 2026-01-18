@@ -2,10 +2,12 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { GoogleFontIcon } from "@/assets/icons/GoogleFontIcon";
 
-import type { BottomNavProps } from "./bottomNav.types";
+import type { BottomNavProps } from "../types/bottomNav.types";
 import { BottomNavItem } from "./BottomNavItem";
-import { useAuthStore } from "@/auth/authStore";
+import { getActions } from "@/auth/authStore";
 import { useNavigate } from "@tanstack/react-router";
+
+const { clearTokens, setIsUnregistered } = getActions();
 
 export function BottomNav({
   items,
@@ -13,7 +15,7 @@ export function BottomNav({
   maxWidthClassName = "max-w-screen-md",
   heightPx = 60,
 }: BottomNavProps) {
-  const logoutUser = useAuthStore((s) => s.logout);
+
   const navigate = useNavigate();
 
   return (
@@ -44,7 +46,8 @@ export function BottomNav({
           type="button"
           variant="ghost"
           onClick={() => {
-            logoutUser();
+            setIsUnregistered();
+            clearTokens();
             navigate({ to: "/auth", replace: true });
           }}
           className={cn(
