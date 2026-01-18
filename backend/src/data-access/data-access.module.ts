@@ -21,6 +21,6 @@ import { DataRepository } from "./data.repository";
       useClass: BackBlazeService,
     },
   ],
-  exports: [BACKBLAZE, InfluencersRepository, UsersRepository, PostRepository, BusinessRepository],
+  exports: [BACKBLAZE, InfluencersRepository, UsersRepository, PostRepository, BusinessRepository, DataRepository],
 })
 export class DataAccessModule {}
